@@ -5,6 +5,11 @@ import api, { timeAgo, readingTime } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 import { CompactArticleCard } from '../components/ArticleCards';
 import EmptyState from '../components/EmptyState';
+import AiSummary from '../components/AiSummary';
+import AskLumen from '../components/AskLumen';
+import TrustBox from '../components/TrustBox';
+import CoverageCluster from '../components/CoverageCluster';
+import Reveal from '../components/Reveal';
 
 export default function ArticleDetail() {
   const { id } = useParams();
@@ -12,6 +17,9 @@ export default function ArticleDetail() {
   const [article, setArticle] = useState(null);
   const [related, setRelated] = useState([]);
   const [reasons, setReasons] = useState({});
+  const [cluster, setCluster] = useState([]);
+  const [lumenSummary, setLumenSummary] = useState([]);
+  const [trust, setTrust] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [shared, setShared] = useState(false);
@@ -24,14 +32,20 @@ export default function ArticleDetail() {
     setDismissed(false);
     (async () => {
       try {
-        const [{ data: a }, { data: r }] = await Promise.all([
+        const [{ data: a }, { data: r }, ctx] = await Promise.all([
           api.get(`/articles/${id}`),
-          api.get(`/recommendations/related/${id}`)
+          api.get(`/recommendations/related/${id}`),
+          api.get(`/articles/${id}/context`).catch(() => null)
         ]);
         if (!alive) return;
         setArticle(a.article);
         setRelated(r.articles || []);
         setReasons(r.reasons || {});
+        if (ctx?.data) {
+          setCluster(ctx.data.cluster || []);
+          setLumenSummary(ctx.data.lumenSummary || []);
+          setTrust(ctx.data.trust || null);
+        }
       } catch {
         if (alive) setError('This story could not be loaded. It may have been removed.');
       } finally {
@@ -126,21 +140,21 @@ export default function ArticleDetail() {
           <button
             onClick={needAuth(() => interact(article._id, isLiked ? 'UNLIKE' : 'LIKE'))}
             aria-pressed={isLiked}
-            className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-[13px] transition-colors ${isLiked ? 'border-accent/50 bg-accent/15 text-paper' : 'border-border text-muted hover:text-paper'}`}
+            className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-[13px] transition-all duration-150 active:scale-[.97] ${isLiked ? 'border-accent/50 bg-accent/15 text-paper' : 'border-border text-muted hover:text-paper'}`}
           >
             <Heart size={15} fill={isLiked ? 'currentColor' : 'none'} /> {isLiked ? 'Liked' : 'Like'}
           </button>
           <button
             onClick={needAuth(() => interact(article._id, isSaved ? 'UNSAVE' : 'SAVE'))}
             aria-pressed={isSaved}
-            className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-[13px] transition-colors ${isSaved ? 'border-accent/50 bg-accent/15 text-paper' : 'border-border text-muted hover:text-paper'}`}
+            className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-[13px] transition-all duration-150 active:scale-[.97] ${isSaved ? 'border-accent/50 bg-accent/15 text-paper' : 'border-border text-muted hover:text-paper'}`}
           >
             <Bookmark size={15} fill={isSaved ? 'currentColor' : 'none'} /> {isSaved ? 'Saved' : 'Save'}
           </button>
-          <button onClick={share} className="flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-[13px] text-muted hover:text-paper">
+          <button onClick={share} className="flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-[13px] text-muted transition-all duration-150 hover:text-paper active:scale-[.97]">
             <Share2 size={15} /> {shared ? 'Link copied' : 'Share'}
           </button>
-          <button onClick={skip} className="ml-auto flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[13px] text-muted hover:text-paper">
+          <button onClick={skip} className="ml-auto flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[13px] text-muted transition-all duration-150 hover:text-paper active:scale-[.97]">
             <EyeOff size={15} /> Not interested
           </button>
         </div>
@@ -164,9 +178,14 @@ export default function ArticleDetail() {
             ))}
           </div>
         )}
+
+        <Reveal><AiSummary articleId={id} /></Reveal>
+        <Reveal><AskLumen articleId={id} /></Reveal>
+        <Reveal><CoverageCluster cluster={cluster} summary={lumenSummary} /></Reveal>
+        <Reveal><TrustBox trust={trust} /></Reveal>
       </div>
 
-      <aside className="mx-auto mt-10 max-w-3xl border-t border-border pt-6" aria-label="Related stories">
+      <Reveal as="aside" className="mx-auto mt-10 max-w-3xl border-t border-border pt-6" aria-label="Related stories">
         <h2 className="text-[18px] font-semibold tracking-tight">More like this</h2>
         <div className="mt-2 grid gap-x-8 sm:grid-cols-2">
           {related.slice(0, 4).map(a => (
@@ -177,7 +196,7 @@ export default function ArticleDetail() {
           ))}
         </div>
         {related.length === 0 && <p className="mt-2 text-sm text-muted">No closely related stories yet.</p>}
-      </aside>
+      </Reveal>
     </div>
   );
 }

@@ -7,9 +7,13 @@ const { errorHandler, notFound } = require('./middleware/errorHandler');
 
 const authRoutes = require('./routes/auth');
 const articleRoutes = require('./routes/articles');
+const liveRoutes = require('./routes/live');
 const recRoutes = require('./routes/recommendations');
 const interactionRoutes = require('./routes/interactions');
 const userRoutes = require('./routes/users');
+const aiRoutes = require('./routes/ai');
+const trendingRoutes = require('./routes/trending');
+const adminRoutes = require('./routes/admin');
 
 function createApp() {
   const app = express();
@@ -40,9 +44,13 @@ function createApp() {
 
   app.use('/api/auth', authRoutes);
   app.use('/api/articles', articleRoutes);
+  app.use('/api/live', liveRoutes);
   app.use('/api/recommendations', recRoutes);
   app.use('/api/interactions', interactionRoutes);
   app.use('/api/users', userRoutes);
+  app.use('/api/ai', aiRoutes);
+  app.use('/api/trending', trendingRoutes);
+  app.use('/api/admin', adminRoutes);
 
   app.use('/api', notFound);
   app.use(errorHandler);

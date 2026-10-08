@@ -8,7 +8,8 @@ const userSchema = new mongoose.Schema(
     avatar: { type: String, default: '' },
     interests: { type: [String], default: [] },
     preferredTopics: { type: [String], default: [] },
-    language: { type: String, default: 'en' }
+    language: { type: String, default: 'en' },
+    role: { type: String, enum: ['user', 'admin'], default: 'user' }
   },
   { timestamps: true }
 );

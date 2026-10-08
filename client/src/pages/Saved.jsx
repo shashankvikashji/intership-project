@@ -68,7 +68,7 @@ export default function Saved() {
         ) : visible.length === 0 ? (
           <EmptyState title="Nothing matches that filter" body="Try a different keyword." />
         ) : (
-          <div className="divide-y divide-border border-t border-border">
+          <div className="stagger divide-y divide-border border-t border-border">
             {visible.map(a => <HorizontalArticleCard key={a._id} article={a} />)}
           </div>
         )}

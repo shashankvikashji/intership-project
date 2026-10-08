@@ -1,5 +1,13 @@
 // Content-based recommendation engine. Honest, explainable scoring —
 // no claim of deep ML. Weights are configurable in one place.
+//
+// Conceptual model (see README):
+//   score = 0.35 * interestMatch + 0.25 * userHistory
+//         + 0.20 * recency + 0.20 * popularity - penalties
+// The constants below implement that split: interest (3.0 on a 0..1
+// similarity ≈ 0.35 share), history (category+tag+keyword, boosted for
+// liked/saved ≈ 0.25), recency (≈0.20), popularity (≈0.20), minus
+// read/skip penalties.
 const WEIGHTS = {
   interest: 3.0,      // explicit interests selected in preferences
   category: 2.2,      // category overlap with liked/saved/read
@@ -8,6 +16,7 @@ const WEIGHTS = {
   liked: 2.5,         // similarity to liked articles
   saved: 2.0,         // similarity to saved articles
   recency: 1.0,       // fresher articles get a small boost
+  popularity: 0.6,    // per-engagement-event score, log-damped
   readPenalty: -4.0,  // already read -> push down (not hide, keeps history usable)
   skipPenalty: -10.0  // explicitly skipped -> effectively exclude
 };
@@ -119,6 +128,12 @@ function calculateArticleScore(article, profile) {
   const rec = recencyScore(article.publishedAt);
   score += WEIGHTS.recency * rec;
 
+  // Popularity: log-damped engagement count so widely-read/saved stories
+  // get a modest lift without drowning out personal relevance.
+  const pop = profile.popularity ? (profile.popularity.get(String(article._id)) || 0) : 0;
+  const popScore = Math.log1p(pop);
+  score += WEIGHTS.popularity * popScore;
+
   if (profile.readIds.has(String(article._id))) {
     score += WEIGHTS.readPenalty;
     reasons.push('Already read');
@@ -128,7 +143,7 @@ function calculateArticleScore(article, profile) {
     reasons.push('Marked not interested');
   }
 
-  return { score, reasons: reasons.slice(0, 2), parts: { interestSim, histSim, recency: rec } };
+  return { score, reasons: reasons.slice(0, 2), parts: { interestSim, histSim, recency: rec, popularity: popScore } };
 }
 
 function rankArticles(allArticles, profile, opts = {}) {

@@ -11,8 +11,8 @@ export default function EmptyState({ title, body, action }) {
 export function SkeletonCard({ horizontal = false }) {
   if (horizontal) {
     return (
-      <div className="flex animate-pulse gap-4 border-b border-border py-4" aria-hidden="true">
-        <div className="h-20 w-28 shrink-0 rounded-md bg-surface2" />
+      <div className="flex gap-4 border-b border-border py-4" aria-hidden="true">
+        <div className="shimmer h-20 w-28 shrink-0 rounded-md" />
         <div className="flex-1 space-y-2 py-1">
           <div className="h-3 w-20 rounded bg-surface2" />
           <div className="h-4 w-3/4 rounded bg-surface2" />
@@ -22,8 +22,8 @@ export function SkeletonCard({ horizontal = false }) {
     );
   }
   return (
-    <div className="animate-pulse overflow-hidden rounded-lg border border-border" aria-hidden="true">
-      <div className="aspect-[16/9] bg-surface2" />
+    <div className="overflow-hidden rounded-lg border border-border" aria-hidden="true">
+      <div className="shimmer aspect-[16/9]" />
       <div className="space-y-2 p-4">
         <div className="h-3 w-20 rounded bg-surface2" />
         <div className="h-4 w-full rounded bg-surface2" />

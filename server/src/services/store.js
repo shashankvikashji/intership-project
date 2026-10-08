@@ -41,6 +41,7 @@ async function ensureSeeded() {
       interests: ['AI', 'Programming', 'Technology', 'Startups'],
       preferredTopics: [],
       language: 'en',
+      role: 'admin',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     });

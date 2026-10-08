@@ -11,7 +11,7 @@ A personalized news reader. Browse the latest stories, follow topics, and get a 
 - Saved stories, reading history grouped by day, interests/preferences, profile
 - JWT auth (register / login / demo account), bcrypt password hashing
 - Content-based recommendation engine (documented below) — no fake ML claims
-- Runs with zero setup: no MongoDB or news API key required (in-memory demo store + 28-article seed)
+- Runs with zero setup: no MongoDB or news API key required (in-memory demo store + 30-article seed)
 
 Demo login: `demo@lumen.news` / `demo1234`
 
@@ -26,7 +26,7 @@ Demo login: `demo@lumen.news` / `demo1234`
 ```
 server/src/
   config/        env, db connection (mongo w/ memory fallback)
-  data/          seedArticles.js (28 realistic dev articles)
+  data/          seedArticles.js (30 realistic dev articles)
   models/        User, Article, Interaction (mongoose schemas)
   routes/        auth, articles, recommendations, interactions, users
   controllers/   thin request handlers
@@ -73,7 +73,12 @@ Build the client: `npm run build` (outputs `client/dist`).
 | `JWT_EXPIRES_IN` | no | e.g. `7d` |
 | `CLIENT_URL` | no | Allowed CORS origin |
 | `NEWS_API_KEY` | no | NewsAPI.org key for the live provider path |
+| `GNEWS_API_KEY` | no | GNews key for today's live headlines (`GET /api/live`). Empty = demo seed fallback |
 | `VITE_API_URL` | no | Client override, default `/api` (vite proxies to :5000 in dev) |
+| `AI_API_KEY` | no | OpenAI-compatible key for AI summaries + Ask Lumen. Empty = extractive fallback |
+| `AI_BASE_URL` | no | Chat-completions base URL (default `https://api.openai.com/v1`) |
+| `AI_MODEL` | no | Model name (default `gpt-4o-mini`) |
+| `ADMIN_EMAILS` | no | Comma-separated admin emails (default `demo@lumen.news`) |
 
 ## API documentation
 
@@ -86,6 +91,7 @@ Base: `/api`. Auth: `Authorization: Bearer <jwt>`.
 | GET | `/auth/me` | yes | Current user |
 | GET | `/articles?category=&search=&sort=&page=&limit=` | – | List articles |
 | GET | `/articles/categories` | – | Category counts |
+| GET | `/live?category=&q=&page=&pageSize=` | – | Today's live headlines via GNews (seed fallback when no key) |
 | GET | `/articles/:id` | – | One article |
 | GET | `/recommendations/feed?limit=` | optional | Ranked feed + `reasons` map |
 | GET | `/recommendations/related/:id` | optional | Related stories + reasons |
@@ -96,6 +102,11 @@ Base: `/api`. Auth: `Authorization: Bearer <jwt>`.
 | GET | `/users/preferences` | yes | `{interests, preferredTopics, language}` |
 | PUT | `/users/preferences` | yes | Save interests |
 | PATCH | `/users/profile` | yes | Update name/avatar |
+| GET | `/trending?limit=` | optional | Engagement-ranked stories + score breakdown |
+| GET | `/articles/:id/context` | optional | Topic cluster + Lumen summary + trust signals |
+| GET | `/ai/summary/:id` | optional | AI/extractive summary: key points, why-it-matters, what's next |
+| POST | `/ai/ask` | optional | `{articleId, question}` → grounded answer from the article |
+| GET | `/admin/stats` | admin | Read-only metrics: users, articles, engagement, provider status |
 | GET | `/health` | – | `{ok, demo, time}` |
 
 ## Recommendation algorithm

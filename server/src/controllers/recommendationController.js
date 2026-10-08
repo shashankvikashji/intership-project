@@ -26,6 +26,15 @@ async function buildProfile(userId) {
   );
   const pick = s => [...s].map(id => byId.get(id)).filter(Boolean);
 
+  // Popularity: engagement volume per article (all users) for the
+  // popularity term of the score. Positive signals only.
+  const popularity = new Map();
+  for (const i of interactions) {
+    if (!['VIEW', 'OPEN', 'LIKE', 'SAVE', 'SHARE'].includes(i.type)) continue;
+    const k = String(i.articleId);
+    popularity.set(k, (popularity.get(k) || 0) + 1);
+  }
+
   return {
     user,
     articles,
@@ -34,7 +43,8 @@ async function buildProfile(userId) {
     likedIds, savedIds, skipIds, readIds,
     likedArticles: pick(likedIds),
     savedArticles: pick(savedIds),
-    historyArticles: pick(readIds)
+    historyArticles: pick(readIds),
+    popularity
   };
 }
 

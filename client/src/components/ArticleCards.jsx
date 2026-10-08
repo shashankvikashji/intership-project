@@ -21,7 +21,7 @@ export function FeaturedArticle({ article, reason }) {
   return (
     <Link
       to={`/article/${article._id}`}
-      className="group grid overflow-hidden rounded-lg border border-border bg-surface transition-colors duration-200 hover:border-[#3a3e4b] md:grid-cols-2"
+      className="group lift grid overflow-hidden rounded-lg border border-border bg-surface transition-colors duration-200 hover:border-[#3a3e4b] md:grid-cols-2"
     >
       <div className="overflow-hidden">
         <img
@@ -53,7 +53,7 @@ export function ArticleCard({ article, reason }) {
   return (
     <Link
       to={`/article/${article._id}`}
-      className="group flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-colors duration-200 hover:border-[#3a3e4b] hover:bg-surface2/50"
+      className="group lift flex flex-col overflow-hidden rounded-lg border border-border bg-surface transition-colors duration-200 hover:border-[#3a3e4b] hover:bg-surface2/50"
     >
       <div className="overflow-hidden">
         <img src={article.image} alt="" loading="lazy" className="card-img aspect-[16/9] w-full object-cover" />

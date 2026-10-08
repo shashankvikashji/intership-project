@@ -5,7 +5,7 @@ import { FeaturedArticle, ArticleCard } from '../components/ArticleCards';
 import { SkeletonCard } from '../components/EmptyState';
 import EmptyState from '../components/EmptyState';
 
-const DEFAULT_CATS = ['All', 'Technology', 'AI', 'Programming', 'Startups', 'Business', 'Science', 'Finance', 'Gaming', 'Sports', 'Entertainment', 'World', 'Politics', 'Health', 'Education'];
+const DEFAULT_CATS = ['All', 'Technology', 'AI', 'Programming', 'Startups', 'Business', 'Science', 'Finance', 'Gaming', 'Sports', 'India', 'Entertainment', 'World', 'Politics', 'Health', 'Education'];
 
 export default function Explore() {
   const [cats, setCats] = useState(DEFAULT_CATS);
@@ -58,7 +58,7 @@ export default function Explore() {
           {active === 'All' && first && (
             <div className="mt-6"><FeaturedArticle article={first} /></div>
           )}
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="stagger mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {(active === 'All' ? rest : articles).map(a => <ArticleCard key={a._id} article={a} />)}
           </div>
         </>

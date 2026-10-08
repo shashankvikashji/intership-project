@@ -4,7 +4,7 @@ import api from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 import EmptyState from '../components/EmptyState';
 
-const ALL = ['Technology', 'AI', 'Programming', 'Startups', 'Business', 'Science', 'Finance', 'Gaming', 'Sports', 'Entertainment', 'World', 'Politics', 'Health', 'Education'];
+const ALL = ['Technology', 'AI', 'Programming', 'Startups', 'Business', 'Science', 'Finance', 'Gaming', 'Sports', 'India', 'Entertainment', 'World', 'Politics', 'Health', 'Education'];
 
 export default function Preferences() {
   const { isAuthed, user, setUser } = useAuth();

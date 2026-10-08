@@ -1,12 +1,15 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 
 export default function Layout() {
+  const { pathname } = useLocation();
   return (
     <div className="min-h-screen bg-ink text-paper">
       <Navbar />
       <main className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6">
-        <Outlet />
+        <div key={pathname} className="page-enter">
+          <Outlet />
+        </div>
       </main>
       <footer className="border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-6 text-[12.5px] text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6">

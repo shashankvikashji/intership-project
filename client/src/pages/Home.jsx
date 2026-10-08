@@ -75,9 +75,10 @@ export default function Home() {
   const more = rest.slice(6);
 
   return (
-    <div className="pt-7">
-      <p className="text-[14px] text-muted">{greeting(user?.name)}</p>
-      <div className="mt-1 flex flex-wrap items-end justify-between gap-2">
+    <div className="relative pt-7">
+      <div className="hero-glow" aria-hidden="true" />
+      <p className="anim-fade-up text-[14px] text-muted" style={{ '--i': 0 }}>{greeting(user?.name)}</p>
+      <div className="anim-fade-up mt-1 flex flex-wrap items-end justify-between gap-2" style={{ '--i': 1 }}>
         <h1 className="text-[30px] font-bold tracking-tight sm:text-[34px]">Stories picked for you</h1>
         {!isAuthed && (
           <Link to="/login" className="text-[13.5px] text-accentHover hover:underline">
@@ -97,14 +98,14 @@ export default function Home() {
         <h2 className="text-[20px] font-semibold tracking-tight">Recommended for you</h2>
         <Link to="/explore" className="text-[13px] text-muted hover:text-paper">Explore all →</Link>
       </div>
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="stagger mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {grid.map(a => <ArticleCard key={a._id} article={a} reason={reasons[a._id]} />)}
       </div>
 
       {more.length > 0 && (
         <>
           <h2 className="mt-10 text-[20px] font-semibold tracking-tight">More in your feed</h2>
-          <div className="mt-2 divide-y divide-border">
+          <div className="stagger mt-2 divide-y divide-border">
             {more.map(a => <HorizontalArticleCard key={a._id} article={a} reason={reasons[a._id]} />)}
           </div>
         </>
@@ -115,7 +116,7 @@ export default function Home() {
           <h2 className="text-[18px] font-semibold tracking-tight">Latest, unranked</h2>
           <span className="text-[12.5px] text-muted">Chronological — no personalization</span>
         </div>
-        <div className="mt-2 divide-y divide-border">
+        <div className="stagger mt-2 divide-y divide-border">
           {latest.slice(0, 4).map(a => <HorizontalArticleCard key={a._id} article={a} />)}
         </div>
       </div>

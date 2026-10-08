@@ -3,7 +3,7 @@
 const CATEGORIES = [
   'Technology', 'AI', 'Programming', 'Startups', 'Business',
   'Science', 'Finance', 'Gaming', 'Sports', 'Entertainment',
-  'World', 'Politics', 'Health', 'Education'
+  'World', 'India', 'Politics', 'Health', 'Education'
 ];
 
 function img(seed) {
@@ -262,6 +262,24 @@ const articles = [
     image: img('lumen-code-28'), source: 'Lumen Wire', author: 'R. Banerjee', url: '',
     tags: ['education', 'programming', 'javascript', 'careers'],
     publishedAt: hoursAgo(5)
+  },
+  {
+    externalId: 'seed-29', category: 'India',
+    title: 'UPI transactions cross a new monthly record as small-town adoption grows',
+    description: 'Digital payments keep expanding beyond metro cities.',
+    content: 'Unified Payments Interface volumes hit another monthly high, with officials pointing to growth in tier-2 and tier-3 cities as first-time users come online.\n\nAnalysts say the next phase depends on keeping transaction failures low during peak hours and extending credit features to small merchants.\n\nIndustry watchers expect competition among payment apps to shift from cashbacks to reliability and merchant services.',
+    image: img('lumen-india-29'), source: 'Lumen Wire', author: 'P. Sharma', url: '',
+    tags: ['india', 'upi', 'fintech', 'payments'],
+    publishedAt: hoursAgo(7)
+  },
+  {
+    externalId: 'seed-30', category: 'India',
+    title: 'ISRO lines up a busy launch calendar with private-sector payloads',
+    description: 'Private satellites are filling up upcoming PSLV and GSLV missions.',
+    content: 'The space agency confirmed a packed schedule of launches, several carrying payloads built by Indian startups.\n\nOfficials said the partnership model — agency infrastructure plus private spacecraft — has cut costs and shortened timelines.\n\nWhat happens next: two missions in the coming months will test new upper-stage technology that future crewed flights depend on.',
+    image: img('lumen-india-30'), source: 'Lumen Wire', author: 'K. Reddy', url: '',
+    tags: ['india', 'isro', 'space', 'startups'],
+    publishedAt: hoursAgo(28)
   }
 ];
 

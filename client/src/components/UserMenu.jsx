@@ -36,6 +36,9 @@ export default function UserMenu() {
         <Link to="/profile" className="block rounded-md px-3 py-2 text-[13.5px] text-muted hover:bg-surface2 hover:text-paper">Profile</Link>
         <Link to="/preferences" className="block rounded-md px-3 py-2 text-[13.5px] text-muted hover:bg-surface2 hover:text-paper">Interests</Link>
         <Link to="/history" className="block rounded-md px-3 py-2 text-[13.5px] text-muted hover:bg-surface2 hover:text-paper">History</Link>
+        {(user?.role === 'admin') && (
+          <Link to="/admin" className="block rounded-md px-3 py-2 text-[13.5px] text-muted hover:bg-surface2 hover:text-paper">Admin dashboard</Link>
+        )}
         <button onClick={logout} className="block w-full rounded-md px-3 py-2 text-left text-[13.5px] text-muted hover:bg-surface2 hover:text-paper">
           Sign out
         </button>

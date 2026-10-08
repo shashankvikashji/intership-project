@@ -24,7 +24,11 @@ export default function SearchPage() {
   const [results, setResults] = useState([]);
   const [reasons, setReasons] = useState({});
   const [loading, setLoading] = useState(false);
+  const [moreLoading, setMoreLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(1);
+  const [total, setTotal] = useState(0);
 
   const dq = useDebounced(q, 350);
 
@@ -58,15 +62,21 @@ export default function SearchPage() {
           if (alive) {
             setResults(arts);
             setReasons(data.reasons || {});
+            setPage(1);
+            setPages(1);
+            setTotal(arts.length);
             setSearched(true);
           }
         } else {
           const { data } = await api.get('/articles', {
-            params: { search: dq.trim() || undefined, category: category === 'All' ? undefined : category, limit: 30, sort: sort === 'newest' ? 'newest' : undefined }
+            params: { search: dq.trim() || undefined, category: category === 'All' ? undefined : category, limit: 15, page: 1, sort: sort === 'newest' ? 'newest' : undefined }
           });
           if (alive) {
             setResults(data.articles || []);
             setReasons({});
+            setPage(data.page || 1);
+            setPages(data.pages || 1);
+            setTotal(data.total || 0);
             setSearched(true);
           }
         }
@@ -85,6 +95,22 @@ export default function SearchPage() {
     setParams(q.trim() ? { q: q.trim() } : {});
   };
 
+  const loadMore = async () => {
+    setMoreLoading(true);
+    try {
+      const { data } = await api.get('/articles', {
+        params: { search: dq.trim() || undefined, category: category === 'All' ? undefined : category, limit: 15, page: page + 1, sort: sort === 'newest' ? 'newest' : undefined }
+      });
+      setResults(prev => [...prev, ...(data.articles || [])]);
+      setPage(data.page || page + 1);
+      setPages(data.pages || pages);
+    } catch {
+      // keep existing results; user can retry
+    } finally {
+      setMoreLoading(false);
+    }
+  };
+
   return (
     <div className="pt-7">
       <h1 className="text-[30px] font-bold tracking-tight">Search</h1>
@@ -101,7 +127,7 @@ export default function SearchPage() {
         </div>
         <div className="flex gap-2">
           <select value={category} onChange={e => setCategory(e.target.value)} aria-label="Filter by category" className="h-11 rounded-md border border-border bg-surface px-3 text-[13.5px]">
-            {['All', 'Technology', 'AI', 'Programming', 'Startups', 'Business', 'Science', 'Finance', 'Gaming', 'Sports', 'Entertainment', 'World', 'Politics', 'Health', 'Education'].map(c => (
+            {['All', 'Technology', 'AI', 'Programming', 'Startups', 'Business', 'Science', 'Finance', 'Gaming', 'Sports', 'India', 'Entertainment', 'World', 'Politics', 'Health', 'Education'].map(c => (
               <option key={c} value={c}>{c === 'All' ? 'All topics' : c}</option>
             ))}
           </select>
@@ -129,10 +155,19 @@ export default function SearchPage() {
           />
         ) : (
           <>
-            <p className="text-[13px] text-muted">{sorted.length} {sorted.length === 1 ? 'result' : 'results'}</p>
-            <div className="divide-y divide-border">
+            <p className="text-[13px] text-muted">{sort === 'personal' || total === 0 ? `${sorted.length} ${sorted.length === 1 ? 'result' : 'results'}` : `${total} ${total === 1 ? 'result' : 'results'}`}</p>
+            <div className="stagger divide-y divide-border">
               {sorted.map(a => <HorizontalArticleCard key={a._id} article={a} reason={reasons[a._id]} />)}
             </div>
+            {sort !== 'personal' && page < pages && (
+              <button
+                onClick={loadMore}
+                disabled={moreLoading}
+                className="mt-6 w-full rounded-md border border-border py-2.5 text-[14px] text-muted hover:text-paper disabled:opacity-50"
+              >
+                {moreLoading ? 'Loading…' : 'Load more'}
+              </button>
+            )}
           </>
         )}
       </div>

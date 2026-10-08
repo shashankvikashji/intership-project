@@ -17,8 +17,11 @@ async function seedMongoIfEmpty() {
   const existing = await User.findOne({ email: 'demo@lumen.news' });
   if (!existing) {
     const hash = await bcrypt.hash('demo1234', 10);
-    await User.create({ name: 'Shashank', email: 'demo@lumen.news', password: hash, interests: ['AI', 'Programming', 'Technology', 'Startups'] });
+    await User.create({ name: 'Shashank', email: 'demo@lumen.news', password: hash, interests: ['AI', 'Programming', 'Technology', 'Startups'], role: 'admin' });
     console.log('[seed] created demo user demo@lumen.news / demo1234');
+  } else if (!existing.role) {
+    existing.role = 'admin';
+    await existing.save();
   }
 }
 

@@ -31,7 +31,7 @@ export default function Category() {
       ) : articles.length === 0 ? (
         <div className="mt-6"><EmptyState title={`No ${name} stories yet`} body="Check back later or browse other topics." action={<Link to="/explore" className="text-sm text-accentHover hover:underline">Back to explore</Link>} /></div>
       ) : (
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="stagger mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {articles.map(a => <ArticleCard key={a._id} article={a} />)}
         </div>
       )}

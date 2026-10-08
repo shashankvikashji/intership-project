@@ -32,12 +32,12 @@ async function register(req, res, next) {
       const hash = await bcrypt.hash(password, 10);
       const user = await User.create({ name, email, password: hash, interests: [] });
       const token = signToken(user._id);
-      return res.status(201).json({ token, user: { _id: user._id, name, email, interests: [] } });
+      return res.status(201).json({ token, user: { _id: user._id, name, email, interests: [], role: 'user' } });
     }
     const existing = state.users.find(u => u.email === email);
     if (existing) return res.status(409).json({ error: 'An account with this email already exists' });
     const hash = await bcrypt.hash(password, 10);
-    const user = { _id: nid('user'), name, email, password: hash, avatar: '', interests: [], preferredTopics: [], language: 'en', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+    const user = { _id: nid('user'), name, email, password: hash, avatar: '', interests: [], preferredTopics: [], language: 'en', role: 'user', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
     state.users.push(user);
     const token = signToken(user._id);
     res.status(201).json({ token, user: publicUser(user) });
@@ -55,7 +55,7 @@ async function login(req, res, next) {
       const ok = await bcrypt.compare(password, user.password);
       if (!ok) return res.status(401).json({ error: 'Invalid email or password' });
       const token = signToken(user._id);
-      return res.json({ token, user: { _id: user._id, name: user.name, email: user.email, interests: user.interests, avatar: user.avatar } });
+      return res.json({ token, user: { _id: user._id, name: user.name, email: user.email, interests: user.interests, avatar: user.avatar, role: user.role || 'user' } });
     }
     const user = state.users.find(u => u.email === email);
     if (!user) return res.status(401).json({ error: 'Invalid email or password' });
@@ -72,7 +72,7 @@ async function me(req, res, next) {
     if (isConnected()) {
       const user = await User.findById(req.userId);
       if (!user) return res.status(404).json({ error: 'User not found' });
-      return res.json({ user: { _id: user._id, name: user.name, email: user.email, interests: user.interests, preferredTopics: user.preferredTopics, language: user.language, avatar: user.avatar } });
+      return res.json({ user: { _id: user._id, name: user.name, email: user.email, interests: user.interests, preferredTopics: user.preferredTopics, language: user.language, avatar: user.avatar, role: user.role || 'user' } });
     }
     const user = state.users.find(u => String(u._id) === String(req.userId));
     if (!user) return res.status(404).json({ error: 'User not found' });

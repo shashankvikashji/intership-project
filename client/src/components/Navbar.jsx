@@ -38,7 +38,11 @@ export default function Navbar() {
         <Logo />
         <nav className="hidden items-center gap-5 md:flex" aria-label="Primary">
           <NavLink to="/" className={link}>Home</NavLink>
+          <NavLink to="/for-you" className={link}>For You</NavLink>
+          <NavLink to="/latest" className={link}>Latest</NavLink>
+          <NavLink to="/trending" className={link}>Trending</NavLink>
           <NavLink to="/explore" className={link}>Explore</NavLink>
+          <NavLink to="/live" className={link}>Live</NavLink>
           <NavLink to="/saved" className={link}>Saved</NavLink>
         </nav>
 
@@ -67,7 +71,7 @@ export default function Navbar() {
       </div>
 
       {open && (
-        <div className="border-t border-border px-4 py-3 md:hidden">
+        <div className="menu-pop border-t border-border px-4 py-3 md:hidden">
           <form onSubmit={submit} className="mb-3 sm:hidden" role="search">
             <input
               value={q}
@@ -80,7 +84,11 @@ export default function Navbar() {
           <nav className="flex flex-col gap-1" aria-label="Mobile">
             {[
               ['/', 'Home'],
+              ['/for-you', 'For You'],
+              ['/latest', 'Latest'],
+              ['/trending', 'Trending'],
               ['/explore', 'Explore'],
+              ['/live', 'Live'],
               ['/saved', 'Saved'],
               ['/history', 'History'],
               ['/preferences', 'Interests']
