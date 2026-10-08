@@ -4,6 +4,7 @@
   "description": "Lumen API — personalized news aggregator backend",
   "main": "src/server.js",
   "type": "commonjs",
+  "engines": { "node": ">=18" },
   "scripts": {
     "dev": "node src/server.js",
     "start": "node src/server.js",
