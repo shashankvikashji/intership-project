@@ -20,7 +20,13 @@ function createApp() {
   // Allow the configured client plus any localhost port (dev servers often
   // shift ports when the default is taken, e.g. 5173 -> 5174).
   const localhostRe = /^http:\/\/localhost:\d+$/;
-  const allowedOrigins = new Set([env.clientUrl, 'http://localhost:5173', 'http://localhost:3000']);
+  const vercelRe = /^https:\/\/([a-z0-9-]+\.)*vercel\.app$/;
+  const allowedOrigins = new Set([
+    env.clientUrl,
+    'http://localhost:5173',
+    'http://localhost:3000',
+    process.env.CLIENT_URL
+  ].filter(Boolean));
   app.use(helmet({
     crossOriginResourcePolicy: false,
     contentSecurityPolicy: {
@@ -32,7 +38,10 @@ function createApp() {
   }));
   app.use(cors({
     origin: (origin, cb) => {
-      if (!origin || allowedOrigins.has(origin) || localhostRe.test(origin)) return cb(null, true);
+      if (!origin) return cb(null, true);
+      if (allowedOrigins.has(origin)) return cb(null, true);
+      if (localhostRe.test(origin)) return cb(null, true);
+      if (vercelRe.test(origin)) return cb(null, true);
       return cb(null, false);
     },
     credentials: true
